@@ -55,6 +55,7 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
+	// 本方法会实例化和调用所有 BeanFactoryPostProcessor（包括其子类 BeanDefinitionRegistryPostProcessor）。
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -70,20 +71,33 @@ final class PostProcessorRegistrationDelegate {
 		// list of all declined PRs involving changes to PostProcessorRegistrationDelegate
 		// to ensure that your proposal does not result in a breaking change:
 		// https://github.com/spring-projects/spring-framework/issues?q=PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status%3A+declined%22
+		// 虽然这种方法的主体似乎可以很容易地重构，以避免使用多个循环和多个列表，但使用多个列表和多个处理器名称是有意的。我们必须确保遵守优先订购和订购处理器的合同。具体来说，我们不能导致处理器被实例化（通过getBean（）调用）或以错误的顺序在ApplicationContext中注册。在提交更改此方法的请求（PR）之前，请查看所有涉及后处理或注册Legate更改的被拒绝的PR列表，以确保您的提案不会导致重大更改：
+
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
+		// 用来存储的processBean集合
 		Set<String> processedBeans = new HashSet<>();
 
+
 		if (beanFactory instanceof BeanDefinitionRegistry registry) {
+			// BeanFactoryPostProcessor允许IOC容器在为实例化完bean前，修改bean的信息，调用bean的功能
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			// BeanDefinitionRegistryPostProcessor 继承自BeanFactoryPostProcessor
+			// 比 BeanFactoryPostProcessor 具有更高的优先级，主要用来在常规的 BeanFactoryPostProcessor 检测开始之前注册其他 bean 定义。
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
+				// 判断是否是beanFactoryPostProcessors子类的后置处理器
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor registryProcessor) {
+					// 实现了这个类，所有可以去执行子类的方法
+					// 直接执行BeanDefinitionRegistryPostProcessor接口的postProcessBeanDefinitionRegistry方法
+					// 这里调用的是子类实现的方法
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+					// 添加刚刚注册的后置处理器
 					registryProcessors.add(registryProcessor);
 				}
 				else {
+					// 普通的BeanFactoryPostProcessor 会被加入这个容器
 					regularPostProcessors.add(postProcessor);
 				}
 			}
@@ -92,6 +106,7 @@ final class PostProcessorRegistrationDelegate {
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
+			// 用于保存本次要执行的BeanDefinitionRegistryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.

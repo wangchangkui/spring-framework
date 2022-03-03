@@ -81,6 +81,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * @see #setResourceLoader
 	 * @see #setEnvironment
 	 */
+	// reader的抽象类型
 	protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		this.registry = registry;
@@ -181,6 +182,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		Assert.notNull(resources, "Resource array must not be null");
 		int count = 0;
 		for (Resource resource : resources) {
+			// 加载的资源数量 递归实现
 			count += loadBeanDefinitions(resource);
 		}
 		return count;

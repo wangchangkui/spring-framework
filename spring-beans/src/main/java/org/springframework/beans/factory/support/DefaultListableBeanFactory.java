@@ -781,6 +781,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				throw new IllegalArgumentException("Value [" + autowiredValue +
 						"] does not implement specified dependency type [" + dependencyType.getName() + "]");
 			}
+
 			this.resolvableDependencies.put(dependencyType, autowiredValue);
 		}
 	}

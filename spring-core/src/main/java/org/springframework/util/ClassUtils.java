@@ -188,11 +188,13 @@ public abstract class ClassUtils {
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		try {
+			// 并非使用ApplicationClassLoader，使用线程的ClassLoader 方便后面加载资源文件，已经效率提神
 			cl = Thread.currentThread().getContextClassLoader();
 		}
 		catch (Throwable ex) {
 			// Cannot access thread context ClassLoader - falling back...
 		}
+		// 如果获取失败，则获取当前类的classLoader 这个才是ApplicationClassLoader
 		if (cl == null) {
 			// No thread context class loader -> use class loader of this class.
 			cl = ClassUtils.class.getClassLoader();

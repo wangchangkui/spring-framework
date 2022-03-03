@@ -119,15 +119,24 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 如果存在beanFactory则先销毁beanFatory
 		if (hasBeanFactory()) {
+			// 销毁beanFacoty
 			destroyBeans();
+			// 关闭beanFactory
 			closeBeanFactory();
 		}
 		try {
+			// 重新开始加载beanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// factoryBean的序列化ID
 			beanFactory.setSerializationId(getId());
+			// 设置bean工厂的相关属性，包括允许覆盖同名的不同定义的对象以及循环依赖
 			customizeBeanFactory(beanFactory);
+			// 这里就是第一次加载Bean的地方，但是并不是实例化，而是将xml中注入的bean放到容器中（注意并没有实例化）
+			// 因为后面还有给bean设置属性，还需要设置后置、AOP 当这些步骤完成才算是实例化一个Bean
 			loadBeanDefinitions(beanFactory);
+			// 设置beanFactory
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {
@@ -146,6 +155,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 	@Override
 	protected final void closeBeanFactory() {
+		// 所谓的关闭，也就是设置为null
 		DefaultListableBeanFactory beanFactory = this.beanFactory;
 		if (beanFactory != null) {
 			beanFactory.setSerializationId(null);
@@ -211,6 +221,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
+	// 设置bean工厂的相关属性，包括允许覆盖同名的不同定义的对象以及循环依赖
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
