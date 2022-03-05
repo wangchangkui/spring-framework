@@ -482,6 +482,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * populates the bean instance, applies post-processors, etc.
 	 * @see #doCreateBean
 	 */
+	// 这里介绍了为什么实际上是调用了doCreateBean
 	@Override
 	protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
 			throws BeanCreationException {
@@ -562,6 +563,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			// 这里的bean是是一个半成品，并非完整的bean
+			// 使用反射的方式获得实例化对象，在注入到bean
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		Object bean = instanceWrapper.getWrappedInstance();
@@ -593,12 +596,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			// 这里开始往三级缓存添加bean，这就说三级表达式是一个函数接口的原因，当调用三级缓存中对应的bena的时候
+			// 才会触发这个lambda
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			// 给bean填充属性的地方
 			populateBean(beanName, mbd, instanceWrapper);
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
@@ -943,10 +949,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param bean the raw bean instance
 	 * @return the object to expose as bean reference
 	 */
-	protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
+	// 提前获得bean对象的引用
+	// typically for the purpose of resolving a circular reference. 通常用来解决循环依赖的问题
+	// 这里引用到了aop的方式，主要是解决aop的代理问题
+	protected Object getEarlyBeanReference(String beanName, org.springframework.beans.factory.support.RootBeanDefinition mbd, Object bean) {
 		Object exposedObject = bean;
+		// 这个方法可能会执行，也可能不会执行
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
+				// 后置处理器的循环，然后创建AOP的代理对象 ,此时的对象会被AOP创建
 				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
 			}
 		}
@@ -1397,6 +1408,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			// 开始填充属性值，之前上面只是判断属性是否存在
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1619,6 +1631,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 							mbd.getResourceDescription(), beanName, "Error setting property values", ex);
 				}
 			}
+			// 获取xml中填充属性对应的值的集合
 			original = mpvs.getPropertyValueList();
 		}
 		else {
@@ -1639,7 +1652,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				deepCopy.add(pv);
 			}
 			else {
+				// 获取属性的名称
 				String propertyName = pv.getName();
+				// 获取属性的值，其实这里是RuntimeBeanReference
 				Object originalValue = pv.getValue();
 				if (originalValue == AutowiredPropertyMarker.INSTANCE) {
 					Method writeMethod = bw.getPropertyDescriptor(propertyName).getWriteMethod();
@@ -1648,6 +1663,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					}
 					originalValue = new DependencyDescriptor(new MethodParameter(writeMethod, 0), true);
 				}
+				// 对bean进行一下相关的处理
+				// 这个方法内就是对RuntimeBeanReference进行判断
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 				Object convertedValue = resolvedValue;
 				boolean convertible = bw.isWritableProperty(propertyName) &&
@@ -1659,8 +1676,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				// in order to avoid re-conversion for every created bean instance.
 				if (resolvedValue == originalValue) {
 					if (convertible) {
+						// 设置或者覆盖值
 						pv.setConvertedValue(convertedValue);
 					}
+					// 深拷贝对象
 					deepCopy.add(pv);
 				}
 				else if (convertible && originalValue instanceof TypedStringValue &&

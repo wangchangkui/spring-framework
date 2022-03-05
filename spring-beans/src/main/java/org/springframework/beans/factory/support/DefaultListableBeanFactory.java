@@ -116,8 +116,8 @@ import org.springframework.util.StringUtils;
  * @see #resolveDependency
  */
 @SuppressWarnings("serial")
-public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
-		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
+public abstract class DefaultListableBeanFactory extends org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+		implements ConfigurableListableBeanFactory, org.springframework.beans.factory.support.BeanDefinitionRegistry, Serializable {
 
 	@Nullable
 	private static Class<?> javaxInjectProviderClass;
