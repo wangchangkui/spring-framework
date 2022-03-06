@@ -61,6 +61,8 @@ public class PluggableSchemaResolver implements EntityResolver {
 	 * The location of the file that defines schema mappings.
 	 * Can be present in multiple JAR files.
 	 */
+	// spring默认存储的xml文件位置
+
 	public static final String DEFAULT_SCHEMA_MAPPINGS_LOCATION = "META-INF/spring.schemas";
 
 
@@ -154,12 +156,14 @@ public class PluggableSchemaResolver implements EntityResolver {
 						logger.trace("Loading schema mappings from [" + this.schemaMappingsLocation + "]");
 					}
 					try {
+						// 核心方法，获取所有的xsd属性
 						Properties mappings =
 								PropertiesLoaderUtils.loadAllProperties(this.schemaMappingsLocation, this.classLoader);
 						if (logger.isTraceEnabled()) {
 							logger.trace("Loaded schema mappings: " + mappings);
 						}
 						schemaMappings = new ConcurrentHashMap<>(mappings.size());
+						// 和合并2个map对象
 						CollectionUtils.mergePropertiesIntoMap(mappings, schemaMappings);
 						this.schemaMappings = schemaMappings;
 					}
@@ -176,6 +180,11 @@ public class PluggableSchemaResolver implements EntityResolver {
 
 	@Override
 	public String toString() {
+		// 这里有个很经典的事情，
+		// 调用构造器创建对象的时候schemaMappings是空值，
+		// 但是在返回后却有值
+		// 这是因为默认调用了这个方法 然后这个方法调用了上面的方法去加载xml值
+
 		return "EntityResolver using schema mappings " + getSchemaMappings();
 	}
 

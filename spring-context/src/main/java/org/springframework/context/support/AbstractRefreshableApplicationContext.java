@@ -96,6 +96,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * If not, an exception will be thrown. Default is "true".
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowBeanDefinitionOverriding
 	 */
+	//解决是否允许bean的定义信息被修改
+	// 其实实际表示为是否允许存在相同定义的不同bean
+
 	public void setAllowBeanDefinitionOverriding(boolean allowBeanDefinitionOverriding) {
 		this.allowBeanDefinitionOverriding = allowBeanDefinitionOverriding;
 	}
@@ -107,6 +110,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * a circular reference, disallowing them completely.
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowCircularReferences
 	 */
+	// 是否自动解决循环依赖的问题
+
 	public void setAllowCircularReferences(boolean allowCircularReferences) {
 		this.allowCircularReferences = allowCircularReferences;
 	}
@@ -119,7 +124,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
-		// 如果存在beanFactory则先销毁beanFatory
+		// 如果存在beanFactory则先销毁beanFactory
 		if (hasBeanFactory()) {
 			// 销毁beanFacoty
 			destroyBeans();
@@ -204,6 +209,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 */
 	protected DefaultListableBeanFactory createBeanFactory() {
+		// 获取内部父类的工厂
 		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
 	}
 
@@ -222,6 +228,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	// 设置bean工厂的相关属性，包括允许覆盖同名的不同定义的对象以及循环依赖
+
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);

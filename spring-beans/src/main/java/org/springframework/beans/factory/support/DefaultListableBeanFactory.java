@@ -948,6 +948,7 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
 
+	// 向IOC注册这些bean定义
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
@@ -957,6 +958,7 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 
 		if (beanDefinition instanceof AbstractBeanDefinition abd) {
 			try {
+				// 验证他是提供bean的定义信息类
 				abd.validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -965,6 +967,7 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 			}
 		}
 
+		// 如果已经存在了bean 则抛出异常
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
 			if (!isAllowBeanDefinitionOverriding()) {
@@ -992,12 +995,16 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 							"] with [" + beanDefinition + "]");
 				}
 			}
+			// 丢入注册好的bean
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+			// bean是否是别名
 			if (isAlias(beanName)) {
+				// 判断是否是可以存在同beanName的不同定义的bean
 				if (!isAllowBeanDefinitionOverriding()) {
 					String aliasedName = canonicalName(beanName);
+					// 如果包含这个别名也抛出异常
 					if (containsBeanDefinition(aliasedName)) {  // alias for existing bean definition
 						throw new BeanDefinitionOverrideException(
 								beanName, beanDefinition, getBeanDefinition(aliasedName));
@@ -1009,12 +1016,14 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 					}
 				}
 				else {
+					// 移除这个bean别名
 					removeAlias(beanName);
 				}
 			}
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
+					// 丢入注册好的bean
 					this.beanDefinitionMap.put(beanName, beanDefinition);
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
 					updatedDefinitions.addAll(this.beanDefinitionNames);
@@ -1025,7 +1034,9 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 			}
 			else {
 				// Still in startup registration phase
+				// 丢入注册好的bean
 				this.beanDefinitionMap.put(beanName, beanDefinition);
+				// 这次这个beanDefinitionName名称
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
 			}
@@ -1853,13 +1864,13 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 	// Serialization support
 	//---------------------------------------------------------------------
 
-	@Serial
+
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		throw new NotSerializableException("DefaultListableBeanFactory itself is not deserializable - " +
 				"just a SerializedBeanFactoryReference is");
 	}
 
-	@Serial
+
 	protected Object writeReplace() throws ObjectStreamException {
 		if (this.serializationId != null) {
 			return new SerializedBeanFactoryReference(this.serializationId);

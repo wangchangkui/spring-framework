@@ -38,9 +38,11 @@ import org.springframework.util.Assert;
  */
 public class DelegatingEntityResolver implements EntityResolver {
 
+	// 规范文件
 	/** Suffix for DTD files. */
 	public static final String DTD_SUFFIX = ".dtd";
 
+	// 规范文件
 	/** Suffix for schema definition files. */
 	public static final String XSD_SUFFIX = ".xsd";
 
@@ -82,6 +84,7 @@ public class DelegatingEntityResolver implements EntityResolver {
 	public InputSource resolveEntity(@Nullable String publicId, @Nullable String systemId)
 			throws SAXException, IOException {
 
+		// 更具标签的方式去读取xml的类容
 		if (systemId != null) {
 			if (systemId.endsWith(DTD_SUFFIX)) {
 				return this.dtdResolver.resolveEntity(publicId, systemId);

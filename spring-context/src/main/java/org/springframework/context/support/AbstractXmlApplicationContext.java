@@ -82,6 +82,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
 		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
 		// xml的reader、后续还可能有别的reader
+		// 这里是一个适配器的设计模式
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
@@ -128,6 +129,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	//BeanFactory的生命周期由refreshBeanFactory方法处理；因此，这个方法应该只是加载和/或注册bean定义
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
 		// 获取配置资源，这里并没有实现，留给子类去实现
+		// 一般情况下 spring不会执行,执行下面那段
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);

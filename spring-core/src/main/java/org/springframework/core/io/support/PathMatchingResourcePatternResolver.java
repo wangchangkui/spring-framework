@@ -291,10 +291,13 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		else {
 			// Generally only look for a pattern after a prefix here,
 			// and on Tomcat only after the "*/" separator for its "war:" protocol.
+
+			// 判断是是war包 然后切割
 			int prefixEnd = (locationPattern.startsWith("war:") ? locationPattern.indexOf("*/") + 1 :
 					locationPattern.indexOf(':') + 1);
 			if (getPathMatcher().isPattern(locationPattern.substring(prefixEnd))) {
 				// a file pattern
+				// 获取配置文件的位置
 				return findPathMatchingResources(locationPattern);
 			}
 			else {

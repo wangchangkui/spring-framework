@@ -136,8 +136,10 @@ public abstract class BeanUtils {
 		if (clazz.isInterface()) {
 			throw new BeanInstantiationException(clazz, "Specified class is an interface");
 		}
+		// 反射的方式注入bean但是没有实例化
 		Constructor<T> ctor;
 		try {
+			// 获取构造器
 			ctor = clazz.getDeclaredConstructor();
 		}
 		catch (NoSuchMethodException ex) {
@@ -186,13 +188,17 @@ public abstract class BeanUtils {
 	public static <T> T instantiateClass(Constructor<T> ctor, Object... args) throws BeanInstantiationException {
 		Assert.notNull(ctor, "Constructor must not be null");
 		try {
+			// 设置强制访问
 			ReflectionUtils.makeAccessible(ctor);
+			// 调用kotlin反射包
 			if (KotlinDetector.isKotlinReflectPresent() && KotlinDetector.isKotlinType(ctor.getDeclaringClass())) {
 				return KotlinDelegate.instantiateClass(ctor, args);
 			}
 			else {
+
 				Class<?>[] parameterTypes = ctor.getParameterTypes();
 				Assert.isTrue(args.length <= parameterTypes.length, "Can't specify more arguments than constructor parameters");
+				// 获取对应的字段 如果有默认值，则设置默认值
 				Object[] argsWithDefaultValues = new Object[args.length];
 				for (int i = 0 ; i < args.length; i++) {
 					if (args[i] == null) {
@@ -203,6 +209,8 @@ public abstract class BeanUtils {
 						argsWithDefaultValues[i] = args[i];
 					}
 				}
+
+				// 实例化对象
 				return ctor.newInstance(argsWithDefaultValues);
 			}
 		}
@@ -648,7 +656,7 @@ public abstract class BeanUtils {
 	 * @param type the type to check
 	 * @return whether the given type represents a "simple" property
 	 * @see org.springframework.beans.factory.support.RootBeanDefinition#DEPENDENCY_CHECK_SIMPLE
-	 * @see org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#checkDependencies
+	 * @see org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory# checkDependencies
 	 * @see #isSimpleValueType(Class)
 	 */
 	public static boolean isSimpleProperty(Class<?> type) {

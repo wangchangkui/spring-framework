@@ -658,13 +658,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		else {
 			// Reset local application listeners to pre-refresh state.
 			// 如果监听容器不是空的，则清除监听容器后重新加载
+			// 在springboot中这里不是空的
 			this.applicationListeners.clear();
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
-		// 用于后面的监听器的装载
+		// 用于后面的事件监听器的装载
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
@@ -1388,6 +1389,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	@Nullable
 	protected BeanFactory getInternalParentBeanFactory() {
+		// 判断是否是父类的工厂秒如果是则返回父类，如果不是则向上转型
 		return (getParent() instanceof ConfigurableApplicationContext ?
 				((ConfigurableApplicationContext) getParent()).getBeanFactory() : getParent());
 	}
@@ -1442,6 +1444,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
+		// 获取之前创建的资源处理器
 		return this.resourcePatternResolver.getResources(locationPattern);
 	}
 

@@ -98,6 +98,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 */
 	@Nullable
 	protected String[] getConfigLocations() {
+		// 获取配置文件的路径
 		return (this.configLocations != null ? this.configLocations : getDefaultConfigLocations());
 	}
 

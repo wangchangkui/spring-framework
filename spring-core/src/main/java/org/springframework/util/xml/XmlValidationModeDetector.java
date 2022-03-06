@@ -92,10 +92,13 @@ public class XmlValidationModeDetector {
 		this.inComment = false;
 
 		// Peek into the file to look for DOCTYPE.
+		// 都字节流的方式
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 			boolean isDtdValidated = false;
 			String content;
+			// 每一行的读取
 			while ((content = reader.readLine()) != null) {
+				// 如果存在xsd或者dtd 则输出相应的解析模式
 				content = consumeCommentTokens(content);
 				if (!StringUtils.hasText(content)) {
 					continue;
@@ -106,9 +109,12 @@ public class XmlValidationModeDetector {
 				}
 				if (hasOpeningTag(content)) {
 					// End of meaningful data...
+
+					// 默认false
 					break;
 				}
 			}
+			// 判断是dtd还是xsd
 			return (isDtdValidated ? VALIDATION_DTD : VALIDATION_XSD);
 		}
 		catch (CharConversionException ex) {
