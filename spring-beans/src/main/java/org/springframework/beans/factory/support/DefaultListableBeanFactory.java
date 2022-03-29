@@ -115,6 +115,7 @@ import org.springframework.util.StringUtils;
  * @see #getBean
  * @see #resolveDependency
  */
+// bean 加载的最核心的部分
 @SuppressWarnings("serial")
 public abstract class DefaultListableBeanFactory extends org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, org.springframework.beans.factory.support.BeanDefinitionRegistry, Serializable {
@@ -143,9 +144,11 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 	private String serializationId;
 
 	/** Whether to allow re-registration of a different definition with the same name. */
+	// 允许bean的定义信息被修改
 	private boolean allowBeanDefinitionOverriding = true;
 
 	/** Whether to allow eager class loading even for lazy-init beans. */
+	// 是否允许bean懒加载
 	private boolean allowEagerClassLoading = true;
 
 	/** Optional OrderComparator for dependency Lists and arrays. */
@@ -153,34 +156,45 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 	private Comparator<Object> dependencyComparator;
 
 	/** Resolver to use for checking if a bean definition is an autowire candidate. */
+	// 用于检查 bean 定义是否为自动装配候选者的解析器
 	private AutowireCandidateResolver autowireCandidateResolver = SimpleAutowireCandidateResolver.INSTANCE;
 
 	/** Map from dependency type to corresponding autowired value. */
+	// 从依赖类型映射到相应的自动装配值
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
 	/** Map of bean definition objects, keyed by bean name. */
+	// bean 定义对象的映射，以 bean 名称为键。 重点，再bean还没有初始化完成之前，会在这个bea对象内
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
 	/** Map from bean name to merged BeanDefinitionHolder. */
+	// 从 bean 名称映射到合并的 BeanDefinitionHolder
 	private final Map<String, BeanDefinitionHolder> mergedBeanDefinitionHolders = new ConcurrentHashMap<>(256);
 
 	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
+	// 单例和非单例 bean 名称的映射，以依赖类型为键。
 	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
 	/** Map of singleton-only bean names, keyed by dependency type. */
+	// 单例ben集合
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
 	/** List of bean definition names, in registration order. */
+
+	// bean 定义名称列表，按注册顺序排列
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
 	/** List of names of manually registered singletons, in registration order. */
+	// 手动注册单例的名称列表，按注册顺序
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
 	/** Cached array of bean definition names in case of frozen configuration. */
 	@Nullable
+	// 在冻结配置的情况下缓存 bean 定义名称数组
 	private volatile String[] frozenBeanDefinitionNames;
 
 	/** Whether bean definition metadata may be cached for all beans. */
+	//是否可以为所有 bean 缓存 bean 定义元数据
 	private volatile boolean configurationFrozen;
 
 

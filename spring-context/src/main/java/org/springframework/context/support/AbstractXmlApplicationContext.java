@@ -45,6 +45,7 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
 
+	// 是否验证文件
 	private boolean validating = true;
 
 
@@ -58,6 +59,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * Create a new AbstractXmlApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
+	// 创建一个抽象的BeanFactory容器
 	public AbstractXmlApplicationContext(@Nullable ApplicationContext parent) {
 		super(parent);
 	}

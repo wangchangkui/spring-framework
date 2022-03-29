@@ -100,6 +100,7 @@ public final class SpringProperties {
 	 */
 	@Nullable
 	public static String getProperty(String key) {
+		// 根据是spel去加载属性
 		String value = localProperties.getProperty(key);
 		if (value == null) {
 			try {
@@ -127,7 +128,9 @@ public final class SpringProperties {
 	 * @return {@code true} if the property is set to "true",
 	 * {@code} false otherwise
 	 */
+	//检索给定的标志位，也就是spel
 	public static boolean getFlag(String key) {
+		// 其实一般默认情况下都是null 所有返回false
 		return Boolean.parseBoolean(getProperty(key));
 	}
 

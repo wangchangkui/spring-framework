@@ -120,46 +120,57 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		implements AutowireCapableBeanFactory {
 
 	/** Strategy for creating bean instances. */
+	// 创建Bean的策略 基于jdk还是cglib
 	private InstantiationStrategy instantiationStrategy;
 
 	/** Resolver strategy for method parameter names. */
+	// 更具参数名称接卸
 	@Nullable
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
 	/** Whether to automatically try to resolve circular references between beans. */
+	// 这里就是解决循环依赖的开关
 	private boolean allowCircularReferences = true;
 
 	/**
 	 * Whether to resort to injecting a raw bean instance in case of circular reference,
 	 * even if the injected bean eventually got wrapped.
 	 */
+	// 是否使用循环依赖的bean的装饰器
 	private boolean allowRawInjectionDespiteWrapping = false;
 
 	/**
 	 * Dependency types to ignore on dependency check and autowire, as Set of
 	 * Class objects: for example, String. Default is none.
 	 */
+	// 在依赖检查和自动装配时要忽略的依赖类型，作为类对象集：例如，字符串。默认为无
 	private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
 
 	/**
 	 * Dependency interfaces to ignore on dependency check and autowire, as Set of
 	 * Class objects. By default, only the BeanFactory interface is ignored.
 	 */
+	// 在依赖检查和自动装配时忽略依赖接口，作为类对象集。默认情况下，仅忽略 BeanFactory 接口。
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
 	/**
 	 * The name of the currently created bean, for implicit dependency registration
 	 * on getBean etc invocations triggered from a user-specified Supplier callback.
 	 */
+
+	// 当前创建的 bean 的名称，用于对 getBean 等调用的隐式依赖注册，这些调用由用户指定的供应商回调触发。
 	private final NamedThreadLocal<String> currentlyCreatedBean = new NamedThreadLocal<>("Currently created bean");
 
 	/** Cache of unfinished FactoryBean instances: FactoryBean name to BeanWrapper. */
+	// 未完成 FactoryBean 实例的缓存：FactoryBean 名称到 BeanWrapper
 	private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
 	/** Cache of candidate factory methods per factory class. */
+	// 每个工厂类的候选工厂方法缓存
 	private final ConcurrentMap<Class<?>, Method[]> factoryMethodCandidateCache = new ConcurrentHashMap<>();
 
 	/** Cache of filtered PropertyDescriptors: bean Class to PropertyDescriptor array. */
+	// 过滤后的 PropertyDescriptor 缓存：bean 类到 PropertyDescriptor 数组
 	private final ConcurrentMap<Class<?>, PropertyDescriptor[]> filteredPropertyDescriptorsCache =
 			new ConcurrentHashMap<>();
 
@@ -173,9 +184,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 忽略的接口，在实例化bean的时候回去判断bean是否实现了这些接口，
 		// 如果实现了这些接口，则忽略不实现这些接口
 		// 后面在bean的初始化中，会有统一的ware属性设置
+		// 其实就是往上面的集合类丢入这些接口。
 		ignoreDependencyInterface(BeanNameAware.class);
 		ignoreDependencyInterface(BeanFactoryAware.class);
 		ignoreDependencyInterface(BeanClassLoaderAware.class);
+		// 选择反射的方式实现类还是通过cglib的方式实现类
+		// 是根据系统环境来决定了
 		if (NativeDetector.inNativeImage()) {
 			this.instantiationStrategy = new SimpleInstantiationStrategy();
 		}
@@ -191,6 +205,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	// 设置父类的工厂
 	public AbstractAutowireCapableBeanFactory(@Nullable BeanFactory parentBeanFactory) {
 		this();
+		// 这个parentBeanFatory是null
 		setParentBeanFactory(parentBeanFactory);
 	}
 

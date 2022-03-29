@@ -64,6 +64,7 @@ public interface ResourceLoader {
 	 * @see Resource#exists()
 	 * @see Resource#getInputStream()
 	 */
+	// 更具文件资源地址获取Resource
 	Resource getResource(String location);
 
 	/**

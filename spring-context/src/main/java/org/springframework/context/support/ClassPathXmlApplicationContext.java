@@ -82,6 +82,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * @throws BeansException if context creation failed
 	 */
 	public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
+		//  单个xml文件下走这个方法
 		this(new String[] {configLocation}, true, null);
 	}
 
@@ -141,6 +142,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 		// 调用父类的构造器
 		super(parent);
 		setConfigLocations(configLocations);
+		// 进入核心功能
 		if (refresh) {
 			// spring启动的最核心的方法
 			refresh();

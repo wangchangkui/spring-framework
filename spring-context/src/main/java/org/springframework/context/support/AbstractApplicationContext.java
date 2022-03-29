@@ -164,12 +164,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * ignore SpEL, i.e. to not initialize the SpEL infrastructure.
 	 * <p>The default is "false".
 	 */
+	// 获取忽略的spel文件集合
 	private static final boolean shouldIgnoreSpel = SpringProperties.getFlag("spring.spel.ignore");
 
 
 	static {
 		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
 		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
+		// 翻译说：
+		// 避免在 WebLogic 8.1 中关闭应用程序时出现奇怪的类加载器问题。
 		ContextClosedEvent.class.getName();
 	}
 
@@ -178,9 +181,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/** Unique id for this context, if any. */
+	// 为以后的beanfactory工厂初始化一个id
 	private String id = ObjectUtils.identityToString(this);
 
 	/** Display name. */
+	// 初始化扩展名字
 	private String displayName = ObjectUtils.identityToString(this);
 
 	/** Parent context. */
@@ -192,18 +197,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private ConfigurableEnvironment environment;
 
 	/** BeanFactoryPostProcessors to apply on refresh. */
+	// beanFactory再初始化bean之前的一些后置处理器
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
 	/** System time in milliseconds when this context started. */
 	private long startupDate;
 
 	/** Flag that indicates whether this context is currently active. */
+	// beanFactory的激活状态标识符 默认false
 	private final AtomicBoolean active = new AtomicBoolean();
 
 	/** Flag that indicates whether this context has been closed already. */
+	// beanFactory 的关闭状态标识符
 	private final AtomicBoolean closed = new AtomicBoolean();
 
 	/** Synchronization monitor for the "refresh" and "destroy". */
+	// 启动关闭的计数器再refresh方法和destroy方法中使用
 	private final Object startupShutdownMonitor = new Object();
 
 	/** Reference to the JVM shutdown hook, if registered. */
@@ -226,9 +235,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
 	/** Application startup metrics. **/
+	// 程序启动的标识，暂时不知道是拿来干啥的
 	private ApplicationStartup applicationStartup = ApplicationStartup.DEFAULT;
 
 	/** Statically specified listeners. */
+	// 一对多事件监听器
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
 	/** Local listeners registered before refresh. */
@@ -251,6 +262,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Create a new AbstractApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
+	// 创建一共抽象的bean工厂
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
 		this();
 		setParent(parent);
@@ -483,6 +495,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see #getResources
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
+	// 这是是传过来的文件地址，用户后面读取使用
 	protected ResourcePatternResolver getResourcePatternResolver() {
 		return new PathMatchingResourcePatternResolver(this);
 	}
@@ -500,12 +513,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * its environment is an instance of {@link ConfigurableEnvironment}.
 	 * @see ConfigurableEnvironment#merge(ConfigurableEnvironment)
 	 */
+	// 设置刚刚创建的bean工厂
 	@Override
 	public void setParent(@Nullable ApplicationContext parent) {
+		// 由于刚刚是创建了一共抽象的bean工厂 并没有设置工厂的父类
+		// 这里通常初始化第一次的时候是null（指代使用xml的时候）
+		// parent = null
 		this.parent = parent;
+		// 一般情况下是后面设置了父类的beanFactory的时候使用
 		if (parent != null) {
+			// 获取父类beanFactory的环境
 			Environment parentEnvironment = parent.getEnvironment();
+			// 必须是配置的环境接口类
 			if (parentEnvironment instanceof ConfigurableEnvironment) {
+				// 将当前环境的值合并
 				getEnvironment().merge((ConfigurableEnvironment) parentEnvironment);
 			}
 		}
@@ -789,6 +810,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 和兴方法
 		org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

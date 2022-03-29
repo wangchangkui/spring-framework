@@ -120,6 +120,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * @see org.springframework.core.io.support.ResourcePatternResolver
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
+	// 设置一共资源加载器的loader
 	public void setResourceLoader(@Nullable ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}

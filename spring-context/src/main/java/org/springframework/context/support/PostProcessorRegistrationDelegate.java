@@ -71,7 +71,12 @@ final class PostProcessorRegistrationDelegate {
 		// list of all declined PRs involving changes to PostProcessorRegistrationDelegate
 		// to ensure that your proposal does not result in a breaking change:
 		// https://github.com/spring-projects/spring-framework/issues?q=PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status%3A+declined%22
-		// 虽然这种方法的主体似乎可以很容易地重构，以避免使用多个循环和多个列表，但使用多个列表和多个处理器名称是有意的。我们必须确保遵守优先订购和订购处理器的合同。具体来说，我们不能导致处理器被实例化（通过getBean（）调用）或以错误的顺序在ApplicationContext中注册。在提交更改此方法的请求（PR）之前，请查看所有涉及后处理或注册Legate更改的被拒绝的PR列表，以确保您的提案不会导致重大更改：
+		// 虽然这种方法的主体似乎可以很容易地重构，
+		// 以避免使用多个循环和多个列表，
+		// 但使用多个列表和多个处理器名称是有意的。
+		// 我们必须确保遵守优先订购和订购处理器的合同。
+		// 具体来说，我们不能导致处理器被实例化（通过getBean（）调用）或以错误的顺序在ApplicationContext中注册。
+		// 在提交更改此方法的请求（PR）之前，请查看所有涉及后处理或注册Legate更改的被拒绝的PR列表，以确保您的提案不会导致重大更改：
 
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.

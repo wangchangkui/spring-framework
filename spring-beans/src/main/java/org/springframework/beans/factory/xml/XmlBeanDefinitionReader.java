@@ -153,6 +153,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see #setValidationMode
 	 * @see #setNamespaceAware
 	 */
+	// 设置是否使用 XML 验证。默认为true 。
+	// 如果关闭验证，此方法将打开命名空间感知，以便在这种情况下仍然正确处理模式命名空间。
 	public void setValidating(boolean validating) {
 		this.validationMode = (validating ? VALIDATION_AUTO : VALIDATION_NONE);
 		this.namespaceAware = !validating;

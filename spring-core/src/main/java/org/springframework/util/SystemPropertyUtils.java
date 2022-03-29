@@ -36,6 +36,8 @@ import org.springframework.lang.Nullable;
 public abstract class SystemPropertyUtils {
 
 	/** Prefix for system property placeholders: "${". */
+	// 支持el表达式的提现，比如传过来的xml文件是${abcd}.xml</p>
+			// 那么他将从系统变量中寻找对应的abcd的变量
 	public static final String PLACEHOLDER_PREFIX = "${";
 
 	/** Suffix for system property placeholders: "}". */

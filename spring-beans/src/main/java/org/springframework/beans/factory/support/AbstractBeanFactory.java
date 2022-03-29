@@ -117,21 +117,26 @@ import org.springframework.util.StringValueResolver;
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
 	/** Parent bean factory, for bean inheritance support. */
+	// beanFactory
 	@Nullable
 	private BeanFactory parentBeanFactory;
 
 	/** ClassLoader to resolve bean class names with, if necessary. */
+	// bean的classloader
 	@Nullable
 	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
 	/** ClassLoader to temporarily resolve bean class names with, if necessary. */
+	// 零时的classLoader
 	@Nullable
 	private ClassLoader tempClassLoader;
 
 	/** Whether to cache bean metadata or rather reobtain it for every access. */
+	// 缓存bean的辕信息
 	private boolean cacheBeanMetadata = true;
 
 	/** Resolution strategy for expressions in bean definition values. */
+	// bean的扩展解析
 	@Nullable
 	private BeanExpressionResolver beanExpressionResolver;
 
@@ -153,6 +158,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	private final List<StringValueResolver> embeddedValueResolvers = new CopyOnWriteArrayList<>();
 
 	/** BeanPostProcessors to apply. */
+	// beanfacotry初始化bean前的后置处理器
 	private final List<BeanPostProcessor> beanPostProcessors = new BeanPostProcessorCacheAwareList();
 
 	/** Cache of pre-filtered post-processors. */
@@ -778,6 +784,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		if (this == parentBeanFactory) {
 			throw new IllegalStateException("Cannot set parent bean factory to self");
 		}
+		// 由于没有父类工厂 直接返回
 		this.parentBeanFactory = parentBeanFactory;
 	}
 
@@ -927,8 +934,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
 		// Remove from old position, if any
+		// 不知道为什么他说先移除之前的beanpostProcess
 		this.beanPostProcessors.remove(beanPostProcessor);
 		// Add to end of list
+		// 然后再加回去
 		this.beanPostProcessors.add(beanPostProcessor);
 	}
 
