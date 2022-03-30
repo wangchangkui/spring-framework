@@ -194,6 +194,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			this.instantiationStrategy = new SimpleInstantiationStrategy();
 		}
 		else {
+			// 基于CGLIB实现序列化策略
 			this.instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 		}
 	}

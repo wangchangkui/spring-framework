@@ -189,6 +189,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private String displayName = ObjectUtils.identityToString(this);
 
 	/** Parent context. */
+
 	@Nullable
 	private ApplicationContext parent;
 

@@ -119,6 +119,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Register each bean definition within the given root {@code <beans/>} element.
 	 */
+	/**
+	 * 扫描跟节点 root
+	 */
 	@SuppressWarnings("deprecation")  // for Environment.acceptsProfiles(String...)
 	protected void doRegisterBeanDefinitions(Element root) {
 		// Any nested <beans> elements will cause recursion in this method. In
@@ -132,6 +135,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
 		if (this.delegate.isDefaultNamespace(root)) {
+			// 扫描根节点的profile属性
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
@@ -147,10 +151,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
-
+		// 没有实现，留给子类去处理
 		preProcessXml(root);
 		// 核心的方法
 		parseBeanDefinitions(root, this.delegate);
+		// 后置处理器
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -169,10 +174,17 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * "import", "alias", "bean".
 	 * @param root the DOM root element of the document
 	 */
+	/**
+	 * 解析这些元素
+	 * “import”、“alias”、“bean”。
+	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
 		if (delegate.isDefaultNamespace(root)) {
+			// 获取所有的子节点
 			NodeList nl = root.getChildNodes();
+
 			for (int i = 0; i < nl.getLength(); i++) {
+				// 读取节点
 				Node node = nl.item(i);
 				// 解析对应的bean元素
 				if (node instanceof Element ele) {
@@ -187,6 +199,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
+		// 不是根节点的处理方法
 		else {
 
 			delegate.parseCustomElement(root);
