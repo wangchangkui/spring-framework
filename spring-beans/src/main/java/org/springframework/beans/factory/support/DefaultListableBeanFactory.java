@@ -987,6 +987,8 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 		// 如果已经存在了bean 则抛出异常
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
+
+			// 如果bean的定义信息不允许被覆盖
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
 			}
@@ -1060,7 +1062,9 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 			this.frozenBeanDefinitionNames = null;
 		}
 
+		// 成功加入的ioc容器中去
 		if (existingDefinition != null || containsSingleton(beanName)) {
+			// 清空beanDefintion的缓存
 			resetBeanDefinition(beanName);
 		}
 		else if (isConfigurationFrozen()) {
