@@ -78,23 +78,28 @@ import org.springframework.util.xml.XmlValidationModeDetector;
  */
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
+
 	/**
 	 * Indicates that the validation should be disabled.
+	 * 禁用验证
 	 */
 	public static final int VALIDATION_NONE = XmlValidationModeDetector.VALIDATION_NONE;
 
 	/**
 	 * Indicates that the validation mode should be detected automatically.
+	 * 自动选择验证
 	 */
 	public static final int VALIDATION_AUTO = XmlValidationModeDetector.VALIDATION_AUTO;
 
 	/**
 	 * Indicates that DTD validation should be used.
+	 * 基于DTD XML验证
 	 */
 	public static final int VALIDATION_DTD = XmlValidationModeDetector.VALIDATION_DTD;
 
 	/**
 	 * Indicates that XSD validation should be used.
+	 * 基于XSD XML验证
 	 */
 	public static final int VALIDATION_XSD = XmlValidationModeDetector.VALIDATION_XSD;
 
@@ -102,6 +107,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	/** Constants instance for this class. */
 	private static final Constants constants = new Constants(XmlBeanDefinitionReader.class);
 
+	/**
+	 * 默认使用 自动验证
+	 */
 	private int validationMode = VALIDATION_AUTO;
 
 	private boolean namespaceAware = false;
@@ -156,6 +164,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	// 设置是否使用 XML 验证。默认为true 。
 	// 如果关闭验证，此方法将打开命名空间感知，以便在这种情况下仍然正确处理模式命名空间。
 	public void setValidating(boolean validating) {
+		// 默认Auto
 		this.validationMode = (validating ? VALIDATION_AUTO : VALIDATION_NONE);
 		this.namespaceAware = !validating;
 	}
@@ -345,6 +354,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 					"IOException parsing XML document from " + encodedResource.getResource(), ex);
 		}
 		finally {
+			// 移除开始传入的xml对象
 			currentResources.remove(encodedResource);
 			if (currentResources.isEmpty()) {
 				this.resourcesCurrentlyBeingLoaded.remove();
@@ -390,7 +400,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			// 读取之前inputSource，以及resource
+			// 读取之前inputSource，以及resource 转成Document
 			Document doc = doLoadDocument(inputSource, resource);
 			// 解析完之后，就可以很快的读取定义的东西的值了，此时beanDefineMap的值就是这里来的
 			int count = registerBeanDefinitions(doc, resource);

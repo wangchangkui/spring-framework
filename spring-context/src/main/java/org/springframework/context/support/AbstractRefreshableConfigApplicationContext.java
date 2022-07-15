@@ -101,6 +101,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	@Nullable
 	protected String[] getConfigLocations() {
 		// 获取配置文件的路径
+		// 当没有设置东西的时候 是/WEB-INF/applicationContext.xml 或者安装的时候是/WEB-INF/命名空间/applicationContext.xml
 		return (this.configLocations != null ? this.configLocations : getDefaultConfigLocations());
 	}
 

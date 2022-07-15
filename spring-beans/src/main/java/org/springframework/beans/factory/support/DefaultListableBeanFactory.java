@@ -790,6 +790,7 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 	@Override
 	public void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue) {
 		Assert.notNull(dependencyType, "Dependency type must not be null");
+		// dependencyType 实际上就是BeanFactory
 		if (autowiredValue != null) {
 			if (!(autowiredValue instanceof ObjectFactory || dependencyType.isInstance(autowiredValue))) {
 				throw new IllegalArgumentException("Value [" + autowiredValue +
@@ -932,8 +933,10 @@ public abstract class DefaultListableBeanFactory extends org.springframework.bea
 		// Trigger initialization of all non-lazy singleton beans...
 		for (String beanName : beanNames) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			// 对bean进行判断
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				if (isFactoryBean(beanName)) {
+					// factorybean是生成bean的工厂，获取的方式是在前面加入一个&
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
 					if (bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isEagerInit()) {
 						getBean(beanName);

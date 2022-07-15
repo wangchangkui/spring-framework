@@ -98,7 +98,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
-		// 设置有xmlRead去读取xml的内容
+		// 设置有xmlRead去读取xml的内容时候验证方式
 		initBeanDefinitionReader(beanDefinitionReader);
 		// 这里才是加载xmlbean的地方
 		loadBeanDefinitions(beanDefinitionReader);
@@ -133,6 +133,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		// 获取配置资源，这里并没有实现，留给子类去实现
 		// 一般情况下 spring不会执行,执行下面那段
 		Resource[] configResources = getConfigResources();
+		// == false configResources 默认是空
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}

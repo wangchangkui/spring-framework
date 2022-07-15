@@ -83,6 +83,8 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 */
 	// reader的抽象类型
 	protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
+
+		// registry 也就是beanFactory
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		this.registry = registry;
 
@@ -91,6 +93,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 			this.resourceLoader = (ResourceLoader) this.registry;
 		}
 		else {
+			// Ant 匹配模式去加载ResourceLoader
 			this.resourceLoader = new PathMatchingResourcePatternResolver();
 		}
 
@@ -212,6 +215,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	// 实际执行的地方
 
 	public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources) throws BeanDefinitionStoreException {
+		// 获取资源加载器
 		ResourceLoader resourceLoader = getResourceLoader();
 		if (resourceLoader == null) {
 			throw new BeanDefinitionStoreException(
@@ -255,6 +259,14 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		}
 	}
 
+	/**
+	 *
+	 * @param locations the resource locations, to be loaded with the {@code ResourceLoader}
+	 *                  也就是你传入的XML文件
+	 * (or {@code ResourcePatternResolver}) of this bean definition reader
+	 * @return loadBeanDefinitions
+	 * @throws BeanDefinitionStoreException 异常
+	 */
 	@Override
 	public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
 		Assert.notNull(locations, "Location array must not be null");
