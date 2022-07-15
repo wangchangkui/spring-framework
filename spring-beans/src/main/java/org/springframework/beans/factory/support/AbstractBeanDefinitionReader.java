@@ -229,6 +229,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 				// 将传进来的东西转换成Resources
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
 				// 实际上就是之前不能进来的地方，AbstractXmlApplicationContext 中的 loadBeanDefinitions方法 只是换个方式进去
+				// XmlBeanDefinition
 				int count = loadBeanDefinitions(resources);
 				if (actualResources != null) {
 					Collections.addAll(actualResources, resources);

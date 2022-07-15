@@ -36,6 +36,7 @@ import org.springframework.beans.factory.BeanDefinitionStoreException;
  */
 public interface BeanDefinitionDocumentReader {
 
+	// 读取xml中的节点？
 	/**
 	 * Read bean definitions from the given DOM document and
 	 * register them with the registry in the given reader context.

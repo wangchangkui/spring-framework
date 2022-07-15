@@ -131,7 +131,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	//BeanFactory的生命周期由refreshBeanFactory方法处理；因此，这个方法应该只是加载和/或注册bean定义
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
 		// 获取配置资源，这里并没有实现，留给子类去实现
-		// 一般情况下 spring不会执行,执行下面那段
+		// 一般情况下 spring不会执行,执行下面那段（根据不同的resource 调用不同的解析器完成解析）
 		Resource[] configResources = getConfigResources();
 		// == false configResources 默认是空
 		if (configResources != null) {
