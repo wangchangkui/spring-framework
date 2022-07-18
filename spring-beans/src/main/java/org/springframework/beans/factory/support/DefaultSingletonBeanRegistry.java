@@ -192,7 +192,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Object singletonObject = this.singletonObjects.get(beanName);
 		// bean是空，切还没创建
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
-			// 就从带创建的容器里卖弄去获得bean
+			// 就从带创建的容器里去获得bean
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			// 这里是一个单例正常的双重判断
 			if (singletonObject == null && allowEarlyReference) {
