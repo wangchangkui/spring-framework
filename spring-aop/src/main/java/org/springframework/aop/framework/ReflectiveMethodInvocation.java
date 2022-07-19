@@ -58,6 +58,10 @@ import org.springframework.lang.Nullable;
  * @see #invocableClone
  * @see #setUserAttribute
  * @see #getUserAttribute
+ *
+ *
+ *
+ * 不管是jdk 还是cglib 最终调用的process都来自这个类
  */
 public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Cloneable {
 
@@ -158,7 +162,13 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 	@Override
 	@Nullable
 	public Object proceed() throws Throwable {
+		// cglib 和process 都是使用这个类的process方法 实现调用
+
+
 		// We start with an index of -1 and increment early.
+
+		// 从拦截器链中按顺序依次调用拦截器，直到所有的拦截器调用完毕，开始调用目标方法，对目标方法的调用
+		// 是在 invokeJoinpoint() 中通过 AopUtils 的 invokeJoinpointUsingReflection() 方法完成的
 		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
 			return invokeJoinpoint();
 		}
